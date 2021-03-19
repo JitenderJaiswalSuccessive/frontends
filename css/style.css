@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<div class="main">
+  <header class="header">
+  <div class="row padding">
+    <div class="bold" style="flex-grow: 1">Checkout</div>
+    <div style="flex-grow: 3"><span>Shipping /</span> <span class="bold">Payment Method</span> <span>/ Confirmation</span></div>
+    <div><i class="fa fa-window-close" aria-hidden="true"></i>
+    </div>
+  </div>
+  <div class="row">
+    <div class="padding" style="flex-grow: 1">Payment Block</div>
+    <div class="greybox padding">Cart Block</div>
+  </div>
+</header>
+</div>
+</body>
+</html>
