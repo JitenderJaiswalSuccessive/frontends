@@ -1,3 +1,5 @@
 import { Trainee } from './Trainee';
+import { Navbar } from './components';
+import { Login } from './Login';
 
-export { Trainee };
+export { Trainee, Navbar, Login };

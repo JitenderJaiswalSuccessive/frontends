@@ -1,10 +1,11 @@
 import React from 'react';
-import { Trainee } from './pages';
+import { Trainee, Login } from './pages';
 
 function App() {
   return (
     <div className="App">
       <Trainee />
+      <Login />
     </div>
   );
 }

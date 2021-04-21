@@ -40,7 +40,7 @@ export default class AddDialog extends PureComponent {
    render() {
      const { open } = this.state;
      return (
-       <div>
+       <div style={{ marginTop: '20px' }}>
          <Button onClick={this.onClose} variant="outlined" size="large" color="primary">
            ADD TRAINEE
          </Button>
@@ -147,7 +147,7 @@ export default class AddDialog extends PureComponent {
                      <Button type="submit" color="primary">
                        Cancel
                      </Button>
-                     <Button type="sumit" disabled={!(props.isValid && props.dirty)} color="primary">
+                     <Button type="submit" disabled={!(props.isValid && props.dirty)} color="primary">
                        Submit
                      </Button>
                    </DialogActions>
