@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 
-export default class ChildrenDemo extends PureComponent {
+export default class Footer extends PureComponent {
   render() {
     return (
       <div>
-        <h1>Children demo</h1>
+
       </div>
     );
   }

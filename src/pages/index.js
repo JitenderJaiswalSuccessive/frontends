@@ -1,5 +1,10 @@
 import { Trainee } from './Trainee';
-import { Navbar } from './components';
 import { Login } from './Login';
+import { TextFieldDemo } from './TextFieldDemo';
+import { InputDemo } from './InputDemo';
+import { ChildrenDemo } from './ChildrenDemo';
+import { NoMatch } from './NoMatch';
 
-export { Trainee, Navbar, Login };
+export {
+  Trainee, Login, TextFieldDemo, InputDemo, ChildrenDemo, NoMatch,
+};
