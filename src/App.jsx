@@ -5,7 +5,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import {
-  Trainee, Login, TextFieldDemo, InputDemo, ChildrenDemo, NoMatch,
+  Trainee, Login, TextFieldDemo, InputDemo, ChildrenDemo, NoMatch, TraineeList, TraineeDetail,
 } from './pages';
 import { Navbar } from './layouts';
 
@@ -20,6 +20,8 @@ function App() {
           <Route path="/text-field-demo" component={TextFieldDemo} />
           <Route path="/input-demo" component={InputDemo} />
           <Route path="/children-demo" component={ChildrenDemo} />
+          <Route exact path="/trainee" component={TraineeList} />
+          <Route path="/trainee/:id" component={TraineeDetail} />
           <Route path="/" component={NoMatch} />
         </Switch>
       </Router>
