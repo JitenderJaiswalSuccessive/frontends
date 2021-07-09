@@ -1,181 +1,183 @@
 import React, { PureComponent } from 'react';
-import clsx from 'clsx';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import style from './style';
 import {
-  TextField, NativeSelect, InputBase, RadioGroup, FormControlLabel, Radio, Grid,
-} from '@material-ui/core';
-// import  {TextField, SelectField, RadioGroup  }  from '../../components';
+  TextField, SelectField, RadioGroup, Button,
+} from '../../components';
+import { footballEntries, cricketEntries, sportSelect } from '../../configs/constants';
+import { Inputschema } from '../../validations/InputDemoValidation';
 
-const useStyles = makeStyles({
-  root: {
-    '&:hover': {
-      backgroundColor: 'transparent',
-    },
-  },
-  icon: {
-    borderRadius: '50%',
-    width: 16,
-    height: 16,
-    boxShadow: 'inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)',
-    backgroundColor: '#f5f8fa',
-    backgroundImage: 'linear-gradient(180deg,hsla(0,0%,100%,.8),hsla(0,0%,100%,0))',
-    '$root.Mui-focusVisible &': {
-      outline: '2px auto rgba(19,124,189,.6)',
-      outlineOffset: 2,
-    },
-    'input:hover ~ &': {
-      backgroundColor: '#ebf1f5',
-    },
-    'input:disabled ~ &': {
-      boxShadow: 'none',
-      background: 'rgba(206,217,224,.5)',
-    },
-  },
-  checkedIcon: {
-    backgroundColor: '#137cbd',
-    backgroundImage: 'linear-gradient(180deg,hsla(0,0%,100%,.1),hsla(0,0%,100%,0))',
-    '&:before': {
-      display: 'block',
-      width: 16,
-      height: 16,
-      backgroundImage: 'radial-gradient(#fff,#fff 28%,transparent 32%)',
-      content: '""',
-    },
-    'input:hover ~ &': {
-      backgroundColor: '#106ba3',
-    },
-  },
-});
-
-// Inspired by blueprintjs
-function StyledRadio(props) {
-  const classes = useStyles();
-
-  return (
-    <Radio
-      className={classes.root}
-      disableRipple
-      color="default"
-      checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
-      icon={<span className={classes.icon} />}
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props}
-    />
-  );
-}
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    borderRadius: 4,
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '10px 26px 10px 12px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-    '&:focus': {
-      borderRadius: 4,
-      borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-    },
-  },
-}))(InputBase);
-
-export default class InputFieldDemo extends PureComponent {
+export default class InputDemo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
       sport: '',
-      Cricket: '',
-      Football: '',
+      cricket: '',
+      football: '',
+      isTouched: {
+        name: false,
+        sport: false,
+        role: false,
+      },
+      hasError: {
+        name: false,
+        sport: false,
+        role: false,
+      },
+      err: {},
     };
   }
 
-    handleInputChange = (field, value) => {
-      if (value === 'Cricket' || field === 'Cricket') {
-        this.setState({
-          [field]: value,
-          Football: '',
-        });
-      } else if (value === 'Football' || field === 'Football') {
-        this.setState({
-          [field]: value,
-          Cricket: '',
-        });
-      } else {
-        this.setState({
-          [field]: value,
-          Football: '',
-          Cricket: '',
-        });
-      }
-    }
+  handleInputChange = (field, value) => {
+    const { isTouched } = this.state;
 
-    render() {
+    if (field === 'cricket') {
+      this.setState({
+        [field]: value,
+        football: '',
+        isTouched: { ...isTouched, role: true },
+      });
+    } else if (field === 'football') {
+      this.setState({
+        [field]: value,
+        cricket: '',
+        isTouched: { ...isTouched, role: true },
+      });
+    } else {
+      this.setState({
+        [field]: value,
+        football: '',
+        cricket: '',
+        isTouched: { ...isTouched, [field]: true },
+        err: {},
+      });
+    }
+  }
+
+  onBlurHandler = (field) => () => {
+    const {
+      name,
+      sport,
+      football,
+      cricket,
+      hasError,
+      err,
+    } = this.state;
+    const allErrors = { ...err };
+    const role = football || cricket;
+
+    Inputschema.validate({ name, sport, role }, { abortEarly: false })
+      .then(() => {
+        hasError[field] = false;
+        allErrors[field] = '';
+        this.setState({ err: {}, hasError });
+      })
+      .catch((error) => {
+        error.inner.forEach((element) => {
+          if (element.path === field) {
+            allErrors[field] = element.message;
+            hasError[field] = true;
+          }
+        });
+        this.setState({ err: allErrors, hasError });
+      });
+  }
+
+  hasError = () => {
+    const { hasError, isTouched } = this.state;
+    let check = 0;
+    let touchCheck = 0;
+    Object.keys(hasError).forEach((element) => {
+      if (!hasError[element]) check += 1;
+    });
+    Object.keys(isTouched).forEach((element) => {
+      if (isTouched[element]) touchCheck += 1;
+    });
+    return !(check === 3 && touchCheck === 3);
+  }
+
+  cancel = () => {
+    this.setState({
+      name: '',
+      sport: '',
+      cricket: '',
+      football: '',
+      isTouched: {
+        name: false,
+        sport: false,
+        role: false,
+      },
+      hasError: {
+        name: false,
+        sport: false,
+        role: false,
+      },
+      err: {},
+    }, () => {
       // eslint-disable-next-line no-console
       console.log(this.state);
-      const { name, sport } = this.state;
-      return (
-        <Grid container xs={12} spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Name"
-              vaue={name}
-              variant="outlined"
-              onChange={(e) => this.handleInputChange('name', e.target.value)}
+    });
+  }
+
+  submit = () => {
+    // eslint-disable-next-line no-console
+    console.log(this.state);
+  }
+
+  render() {
+    const {
+      name, sport, cricket, football, err,
+    } = this.state;
+
+    const sportVal = (sport === 'cricket') ? cricketEntries : footballEntries;
+    const RadioVal = cricket || football;
+    return (
+      <>
+        <div>
+          <h3>Name</h3>
+          <TextField
+            value={name}
+            onChange={(e) => this.handleInputChange('name', e.target.value)}
+            onBlur={this.onBlurHandler('name')}
+            err={err.name}
+          />
+        </div>
+        <div>
+          <h3>Select the game you want to play</h3>
+          <SelectField
+            value={sport}
+            options={sportSelect}
+            onChange={(e) => this.handleInputChange('sport', e.target.value)}
+            onBlur={this.onBlurHandler('sport')}
+            err={err.sport}
+          />
+        </div>
+        {sport && (
+          <div style={style.base}>
+            <h3>What do you do?</h3>
+            <RadioGroup
+              value={RadioVal}
+              options={sportVal}
+              onChange={(e) => this.handleInputChange(sport, e.nativeEvent.target.value)}
+              onBlur={this.onBlurHandler('role')}
+              err={err.role}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <NativeSelect
-              fullWidth
-              id="demo-customized-select-native"
-              value={sport}
-              onChange={(e) => this.handleInputChange('sport', e.target.value)}
-              input={<BootstrapInput />}
-            >
-              <option value="" disabled>Select</option>
-              <option value="Cricket">Cricket</option>
-              <option value="Football">Football</option>
-            </NativeSelect>
-          </Grid>
-          <Grid item xs={12}>
-            {sport === 'Cricket' && (
-              <RadioGroup name="sport">
-                <FormControlLabel value="Wicket Keeper" onChange={(e) => this.handleInputChange('wicket', e.target.value)} control={<StyledRadio />} label="Wicket Keeper" />
-                <FormControlLabel value="Batsman" onChange={(e) => this.handleInputChange('batsman', e.target.value)} control={<StyledRadio />} label="Batsman" />
-                <FormControlLabel value="Bowler" onChange={(e) => this.handleInputChange('bowler', e.target.value)} control={<StyledRadio />} label="Bowler" />
-                <FormControlLabel value="All Rounder" onChange={(e) => this.handleInputChange('allRounder', e.target.value)} control={<StyledRadio />} label="All Rounder" />
-              </RadioGroup>
-            )}
-            {sport === 'Football' && (
-              <RadioGroup name="sport">
-                <FormControlLabel value="Defender" onChange={(e) => this.handleInputChange('defender', e.target.value)} control={<StyledRadio />} label="Defender" />
-                <FormControlLabel value="Striker" onChange={(e) => this.handleInputChange('striker', e.target.value)} control={<StyledRadio />} label="Striker" />
-                <FormControlLabel value="Bowler" onChange={(e) => this.handleInputChange('bowler', e.target.value)} control={<StyledRadio />} label="Bowler" />
-              </RadioGroup>
-            )}
-          </Grid>
-        </Grid>
-      );
-    }
+          </div>
+        )}
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <Button
+            style={style.button}
+            value="Cancel"
+            onClick={this.cancel}
+          />
+          <Button
+            disabled={this.hasError()}
+            style={style.buttonEn}
+            value="Submit"
+            onClick={this.submit}
+          />
+        </div>
+      </>
+    );
+  }
 }

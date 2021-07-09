@@ -7,7 +7,7 @@ export const SignInSchema = Yup.object().shape({
     .email('Email Address must be a valid email')
     .required('Email Address is a required field'),
   password: Yup.string()
-    .min(8, 'Must contains 8 characters, at least one uppercase letter, one lowercase letter and one number')
+    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/, 'Must contain one Upper-Case, one Lower-Case , one digit and atleast 8 characters')
     .required('Password is required'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Must match Password')

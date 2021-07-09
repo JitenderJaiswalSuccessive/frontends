@@ -1,28 +1,28 @@
 import React from 'react';
 import {
   Switch,
-  Route,
   BrowserRouter as Router,
 } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import {
-  Trainee, Login, TextFieldDemo, InputDemo, ChildrenDemo, NoMatch, TraineeList, TraineeDetail,
+  Trainee, Login, InputDemo, ChildrenDemo,
+  NoMatch, TextFieldDemo, Logout,
 } from './pages';
-import { Navbar } from './layouts';
+import { PrivateRoute, AuthRoute } from './routes';
 
 function App() {
   return (
     <div className="App">
+      <CssBaseline />
       <Router>
-        <Navbar />
         <Switch>
-          <Route exact path="/" component={Trainee} />
-          <Route path="/login" component={Login} />
-          <Route path="/text-field-demo" component={TextFieldDemo} />
-          <Route path="/input-demo" component={InputDemo} />
-          <Route path="/children-demo" component={ChildrenDemo} />
-          <Route exact path="/trainee" component={TraineeList} />
-          <Route path="/trainee/:id" component={TraineeDetail} />
-          <Route path="/" component={NoMatch} />
+          <AuthRoute path="/login" component={Login} />
+          <PrivateRoute path="/logout" component={Logout} />
+          <PrivateRoute path="/trainee" component={Trainee} />
+          <PrivateRoute path="/text-field-demo" component={TextFieldDemo} />
+          <PrivateRoute path="/input-demo" component={InputDemo} />
+          <PrivateRoute path="/children-demo" component={ChildrenDemo} />
+          <PrivateRoute component={NoMatch} />
         </Switch>
       </Router>
     </div>
